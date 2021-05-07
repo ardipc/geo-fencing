@@ -7,26 +7,25 @@ import moment from 'moment-timezone'
 
 import io from 'socket.io-client'
 const SOCKET_URL = 'https://various-delirious-river.glitch.me'
+const socket = io(SOCKET_URL, { query: { room: 'geofencing' } });
 
 function Leaf(props) {
   const { coords, timestamp } = props
 
   if(coords) {
 
-    const socket = io(SOCKET_URL, { query: { room: 'geofencing' } });
     const [data, setData] = useState([])
+    console.log(data)
 
     const [isName, setIsName] = useState(false)
     const [name, setName] = useState('')
     const [me, setMe] = useState({})
 
-    useEffect(() => {
-      socket.on("message", body => {
-        let copy = [...data];
-        copy.push(body)
-        setData(copy)
-      });
-    }, []);
+    socket.on("message", body => {
+      let copy = [...data];
+      copy.push(body)
+      setData(copy)
+    });
 
     const Map = dynamic(
       () => import('../components/MapLeaflet'),
